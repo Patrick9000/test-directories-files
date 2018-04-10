@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Files</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h3>Files</h3>
+<form th:action="@{/}">
+    <p><input type="submit" value="Go back" /></p>
+</form>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Size</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="file,iterstat : ${files}">
+        <td th:text="${iterstat.index}"/>
+        <td th:text="${file.getName()}"/>
+        <td th:text="${file.isDirectory()?'<dir>':file.getSize()}"/>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
