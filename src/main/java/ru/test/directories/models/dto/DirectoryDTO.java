@@ -1,5 +1,8 @@
 package ru.test.directories.models.dto;
 
+import ru.test.directories.models.Directory;
+import ru.test.directories.other.SizeFormatUtil;
+
 import java.util.Date;
 
 public class DirectoryDTO {
@@ -70,5 +73,20 @@ public class DirectoryDTO {
         this.nestedDirsCount = nestedDirsCount;
         this.nestedFilesCount = nestedFilesCount;
         this.summarySize = summarySize;
+    }
+
+    public DirectoryDTO(Directory directory)
+    {
+        this.id = directory.getId();
+        this.path = directory.getPath();
+        this.createdDate = directory.getCreatedDate();
+        this.nestedDirsCount = directory.getNestedDirsCount();
+        this.nestedFilesCount = directory.getNestedFilesCount();
+        this.summarySize = directory.getSummarySize();
+    }
+
+    public String getSummarySizeReadable()
+    {
+        return SizeFormatUtil.getSizeReadable(summarySize);
     }
 }

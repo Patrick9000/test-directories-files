@@ -7,9 +7,11 @@ import ru.test.directories.models.dto.DirectoryDTO;
 import java.util.List;
 
 public interface DirectoryService {
-    Directory addDirectory(String directoryPath);
+    void addDirectory(String directoryPath);
 
     List<DirectoryDTO> getDirectoriesList();
 
     List<Entry> getFilesForDirectory(String dirId);
+
+    DirectoryDTO getDirectoryDTO(String dirId);
 }

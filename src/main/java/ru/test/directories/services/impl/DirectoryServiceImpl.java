@@ -2,6 +2,8 @@ package ru.test.directories.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import ru.test.directories.dao.DirectoryDAO;
 import ru.test.directories.dao.EntryDAO;
 import ru.test.directories.models.Directory;
@@ -10,8 +12,10 @@ import ru.test.directories.models.dto.DirectoryDTO;
 import ru.test.directories.other.FilesComparator;
 import ru.test.directories.services.DirectoryService;
 
+import javax.validation.ValidationException;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -29,11 +33,11 @@ public class DirectoryServiceImpl implements DirectoryService {
     private EntryDAO entryDAO;
 
     @Override
-    public Directory addDirectory(String directoryPath) {
-        if (Files.exists(Paths.get(directoryPath))) {
+    public void addDirectory(String directoryPath) {
+        if (isValidPath(directoryPath) && Files.exists(Paths.get(directoryPath))) {
             File folder = new File(directoryPath);
             List<Entry> entryList = new ArrayList<>();
-            if (folder.listFiles()!=null&& Objects.requireNonNull(folder.listFiles()).length > 0) {
+            if (folder.listFiles() != null && Objects.requireNonNull(folder.listFiles()).length > 0) {
                 for (File file : Objects.requireNonNull(folder.listFiles())) {
                     //if is directory -> no size, else file.length()
                     Entry entry = new Entry(file.getName(), file.isDirectory(), file.isDirectory() ? 0 : file.length());
@@ -57,7 +61,15 @@ public class DirectoryServiceImpl implements DirectoryService {
             directory.setNested(entryList);
             directoryDAO.save(directory);
         }
-        return null;
+    }
+
+    private boolean isValidPath(String path) {
+        try {
+            Paths.get(path);
+        } catch (InvalidPathException | NullPointerException ex) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -65,13 +77,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         List<Directory> directoryList = directoryDAO.findAll();
         List<DirectoryDTO> dtoList = new ArrayList<>();
         for (Directory directory : directoryList) {
-            dtoList.add(new DirectoryDTO(
-                    directory.getId(),
-                    directory.getPath(),
-                    directory.getCreatedDate(),
-                    directory.getNestedDirsCount(),
-                    directory.getNestedFilesCount(),
-                    directory.getSummarySize()));
+            dtoList.add(new DirectoryDTO(directory));
         }
         return dtoList;
     }
@@ -79,12 +85,18 @@ public class DirectoryServiceImpl implements DirectoryService {
     @Override
     public List<Entry> getFilesForDirectory(String dirId) {
         Directory directory = directoryDAO.findById(dirId).get();
-        List<Entry> entries = directory.getNested();
-        List<Entry> directories = directory.getNested().stream().filter(e -> e.isDirectory()).collect(Collectors.toList());
+        List<Entry> directories = directory.getNested().stream().filter(Entry::isDirectory).collect(Collectors.toList());
         List<Entry> files = directory.getNested().stream().filter(e -> !e.isDirectory()).collect(Collectors.toList());
-        Collections.sort(directories, new FilesComparator());
-        Collections.sort(files, new FilesComparator());
+        directories.sort(new FilesComparator());
+        files.sort(new FilesComparator());
         directories.addAll(files);
         return directories;
+    }
+
+    @Override
+    public DirectoryDTO getDirectoryDTO(String dirId) {
+        Directory directory = directoryDAO.findById(dirId).get();
+        return new DirectoryDTO(directory);
+
     }
 }

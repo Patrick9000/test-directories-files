@@ -6,30 +6,29 @@
 </head>
 <body>
 <h1>Directories and Files</h1>
-<h3>Add Directory</h3>
 <form th:action="@{/}" th:object="${path}" method="post">
-    <p>Enter new directory: <input type="text" th:field="*{content}" /><input type="submit" value="Add to list" /></p>
+    <p>New directory: <input type="text" th:field="*{content}" /><input type="submit" value="Add to list" /></p>
+    <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Error</p>
 </form>
-<h3>Directories</h3>
-<table border="1">
+<table th:if="${dirs?.size()>0}" border="1">
+    <caption>Directories</caption>
     <thead>
     <tr>
-        <th>ID</th>
         <th>Created Date</th>
         <th>Path</th>
         <th>Num of dirs</th>
         <th>Num of files</th>
         <th>Summary size of files</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="dir,iterstat : ${dirs}">
-        <td th:text="${iterstat.index}"/>
+    <tr th:each="dir,iterstat : ${dirs}" th:style="${iterstat.even} ? 'background-color: #F0F0F0' : 'background-color: #FFFFFF'">
         <td th:text="${#dates.format(dir.getCreatedDate(),'dd-MM-yyyy HH:mm')}"/>
         <td th:text="${dir.getPath()}"/>
-        <td th:text="${dir.getNestedDirsCount()}"/>
-        <td th:text="${dir.getNestedFilesCount()}"/>
-        <td th:text="${dir.getSummarySize()}"/>
+        <td th:text="${dir.getNestedDirsCount()}" align="right"/>
+        <td th:text="${dir.getNestedFilesCount()}" align="right"/>
+        <td th:text="${dir.getSummarySizeReadable()}" align="right"/>
         <td>
             <form action="#" th:action="@{/files/} + ${{dir.getId()}}" method="get">
                 <button th:id="${dir.getId()}" type="submit">

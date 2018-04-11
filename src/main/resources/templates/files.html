@@ -6,22 +6,23 @@
 </head>
 <body>
 <h3>Files</h3>
-<form th:action="@{/}">
-    <p><input type="submit" value="Go back" /></p>
-</form>
-<table border="1">
+    <form th:action="@{/}">
+        <input  type="submit" value="Go back" />
+    </form>
+
+<table th:if="${files.size()>0}" border="1">
+    <caption th:text="'Path: ' + ${dir.getPath()} + ' (' + ${dir.getCreatedDate()} + ')'"></caption>
     <thead>
     <tr>
-        <th>ID</th>
         <th>Name</th>
         <th>Size</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="file,iterstat : ${files}">
-        <td th:text="${iterstat.index}"/>
+    <tr th:each="file,iterstat : ${files}" th:style="${iterstat.even} ? 'background-color: #F0F0F0' : 'background-color: #FFFFFF'">
         <td th:text="${file.getName()}"/>
-        <td th:text="${file.isDirectory()?'<dir>':file.getSize()}"/>
+        <td th:text="${file.isDirectory()?'<dir>':file.getSizeReadable()}"
+            th:style="${file.isDirectory()} ? 'text-align: center' : 'text-align: right'"/>
     </tr>
     </tbody>
 </table>

@@ -3,6 +3,7 @@ package ru.test.directories.models;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import ru.test.directories.other.SizeFormatUtil;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -91,5 +92,10 @@ public class Directory {
 
     public Directory(String path) {
         this.path = path;
+    }
+
+    public String getSummarySizeReadable()
+    {
+        return SizeFormatUtil.getSizeReadable(summarySize);
     }
 }

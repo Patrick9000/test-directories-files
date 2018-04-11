@@ -1,6 +1,7 @@
 package ru.test.directories.models;
 
 import org.hibernate.annotations.GenericGenerator;
+import ru.test.directories.other.SizeFormatUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -59,5 +60,10 @@ public class Entry {
         this.name = name;
         this.directory = directory;
         this.size = size;
+    }
+
+    public String getSizeReadable()
+    {
+        return SizeFormatUtil.getSizeReadable(size);
     }
 }
