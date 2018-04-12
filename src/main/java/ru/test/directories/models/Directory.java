@@ -23,7 +23,7 @@ public class Directory {
     @CreatedDate
     private Date createdDate = new Date();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REFRESH)
     private List<Entry> nested;
 
     private int nestedDirsCount;
@@ -94,8 +94,7 @@ public class Directory {
         this.path = path;
     }
 
-    public String getSummarySizeReadable()
-    {
+    public String getSummarySizeReadable() {
         return SizeFormatUtil.getSizeReadable(summarySize);
     }
 }

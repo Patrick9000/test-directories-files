@@ -34,7 +34,7 @@ public class DirectoryServiceImpl implements DirectoryService {
 
     @Override
     public void addDirectory(String directoryPath) {
-        if (isValidPath(directoryPath) && Files.exists(Paths.get(directoryPath))) {
+        if (isValidPathAndItsExistsAndItsDirectory(directoryPath)) {
             File folder = new File(directoryPath);
             List<Entry> entryList = new ArrayList<>();
             if (folder.listFiles() != null && Objects.requireNonNull(folder.listFiles()).length > 0) {
@@ -61,6 +61,11 @@ public class DirectoryServiceImpl implements DirectoryService {
             directory.setNested(entryList);
             directoryDAO.save(directory);
         }
+    }
+
+    @Override
+    public boolean isValidPathAndItsExistsAndItsDirectory(String path) {
+        return isValidPath(path) && Files.exists(Paths.get(path)) && Files.isDirectory(Paths.get(path));
     }
 
     private boolean isValidPath(String path) {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.test.directories.models.Post;
 import ru.test.directories.services.DirectoryService;
 
@@ -20,25 +21,39 @@ public class DirectoryController {
 
     @GetMapping("/")
     public String getDirectories(Model model) {
-        model.addAttribute("path", new Post());
-        model.addAttribute("dirs",directoryService.getDirectoriesList());
+        if (!model.containsAttribute("path")) {
+            model.addAttribute("path", new Post());
+        }
+        model.addAttribute("dirs", directoryService.getDirectoriesList());
         return "index";
     }
 
     @PostMapping("/")
-    public String pathSubmit(@Valid @ModelAttribute("path") Post path,BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-        {
+    public String pathSubmit(@Valid @ModelAttribute("path") Post path,
+                             BindingResult bindingResult,
+                             RedirectAttributes attr) {
+        if (bindingResult.hasErrors()) {
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.path", bindingResult);
+            attr.addFlashAttribute("path", path);
             return "redirect:/";
+        } else {
+            if (directoryService.isValidPathAndItsExistsAndItsDirectory(path.getContent())) {
+                directoryService.addDirectory(path.getContent());
+                return "redirect:/";
+            } else {
+                bindingResult.rejectValue("content", "error.content", "Incorrect path");
+                attr.addFlashAttribute("org.springframework.validation.BindingResult.path", bindingResult);
+                attr.addFlashAttribute("path", path);
+                return "redirect:/";
+            }
+
         }
-        else directoryService.addDirectory(path.getContent());
-        return "redirect:/";
     }
 
-    @GetMapping(value="/files/{id}")
+    @GetMapping(value = "/files/{id}")
     public String getFiles(@PathVariable String id, Model model) {
         model.addAttribute("files", directoryService.getFilesForDirectory(id));
-        model.addAttribute("dir",directoryService.getDirectoryDTO(id));
+        model.addAttribute("dir", directoryService.getDirectoryDTO(id));
         return "files";
     }
 }

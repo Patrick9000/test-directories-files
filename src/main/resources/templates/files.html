@@ -6,14 +6,13 @@
 </head>
 <body>
 <h3>Files</h3>
-    <form th:action="@{/}">
-        <input  type="submit" value="Go back" />
-    </form>
-
+<form th:action="@{/}">
+    <input  type="submit" value="Go back" />
+</form>
 <table th:if="${files.size()>0}" border="1">
     <caption th:text="'Path: ' + ${dir.getPath()} + ' (' + ${dir.getCreatedDate()} + ')'"></caption>
     <thead>
-    <tr>
+    <tr style="background-color: #EEEEEE;">
         <th>Name</th>
         <th>Size</th>
     </tr>

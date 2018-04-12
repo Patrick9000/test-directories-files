@@ -62,8 +62,7 @@ public class Entry {
         this.size = size;
     }
 
-    public String getSizeReadable()
-    {
+    public String getSizeReadable() {
         return SizeFormatUtil.getSizeReadable(size);
     }
 }
