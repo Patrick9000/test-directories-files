@@ -5,21 +5,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>Directories and Files</h1>
+<h1>Директории и файлы</h1>
 <form th:action="@{/}" th:object="${path}" method="post">
-    <div>New directory: <input type="text" th:field="*{content}" /><input type="submit" value="Add to list" />
+    <div>Новая директория: <input type="text" th:field="*{content}" /><input type="submit" value="Добавить в список" />
     <div style="color:red; position: absolute; left: 110px;" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div></div>
 </form>
 <br>
 <table th:if="${dirs?.size()>0}" border="1">
-    <caption>Directories</caption>
+    <caption>Список директорий и файлов</caption>
     <thead>
     <tr style="background-color: #EEEEEE;">
-        <th>Created Date</th>
-        <th>Path</th>
-        <th>Num of dirs</th>
-        <th>Num of files</th>
-        <th>Summary size of files</th>
+        <th>Дата</th>
+        <th>Базовая директория</th>
+        <th>Директорий</th>
+        <th>Файлов</th>
+        <th>Суммарный размер файлов</th>
         <th></th>
     </tr>
     </thead>
@@ -31,9 +31,9 @@
         <td th:text="${dir.getNestedFilesCount()}" align="right"/>
         <td th:text="${dir.getSummarySizeReadable()}" align="right"/>
         <td>
-            <form action="#" th:action="@{/files/} + ${{dir.getId()}}" method="get">
+            <form action="#" target="_blank" th:action="@{/files/} + ${{dir.getId()}}" method="get">
                 <button th:id="${dir.getId()}" type="submit">
-                    <i>Files</i>
+                    <i>Файлы</i>
                 </button>
             </form>
         </td>

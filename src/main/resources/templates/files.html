@@ -5,16 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h3>Files</h3>
-<form th:action="@{/}">
-    <input  type="submit" value="Go back" />
-</form>
 <table th:if="${files.size()>0}" border="1">
-    <caption th:text="'Path: ' + ${dir.getPath()} + ' (' + ${dir.getCreatedDate()} + ')'"></caption>
+    <caption th:text="${dir.getPath()} + ' (' + ${dir.getCreatedDate()} + ')'"></caption>
     <thead>
     <tr style="background-color: #EEEEEE;">
-        <th>Name</th>
-        <th>Size</th>
+        <th>Файл</th>
+        <th>Размер</th>
     </tr>
     </thead>
     <tbody>
@@ -25,5 +21,7 @@
     </tr>
     </tbody>
 </table>
+<br>
+<input  type="submit" value="Закрыть" th:onclick="'javascript:window.close()'"/>
 </body>
 </html>

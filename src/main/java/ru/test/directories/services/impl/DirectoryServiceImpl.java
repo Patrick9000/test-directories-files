@@ -2,21 +2,17 @@ package ru.test.directories.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import ru.test.directories.dao.DirectoryDAO;
 import ru.test.directories.dao.EntryDAO;
 import ru.test.directories.models.Directory;
 import ru.test.directories.models.Entry;
 import ru.test.directories.models.dto.DirectoryDTO;
-import ru.test.directories.other.FilesComparator;
+import ru.test.directories.other.FileNameComparator;
 import ru.test.directories.services.DirectoryService;
 
-import javax.validation.ValidationException;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,8 +88,8 @@ public class DirectoryServiceImpl implements DirectoryService {
         Directory directory = directoryDAO.findById(dirId).get();
         List<Entry> directories = directory.getNested().stream().filter(Entry::isDirectory).collect(Collectors.toList());
         List<Entry> files = directory.getNested().stream().filter(e -> !e.isDirectory()).collect(Collectors.toList());
-        directories.sort(new FilesComparator());
-        files.sort(new FilesComparator());
+        directories.sort(new FileNameComparator());
+        files.sort(new FileNameComparator());
         directories.addAll(files);
         return directories;
     }
